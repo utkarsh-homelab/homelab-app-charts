@@ -1,6 +1,6 @@
 # homelab-app-charts
 
-Helm charts for self-hosted applications on homelab Kubernetes cluster.
+Helm charts for self-hosted applications on Homelab Kubernetes cluster.
 
 ## Structure
 

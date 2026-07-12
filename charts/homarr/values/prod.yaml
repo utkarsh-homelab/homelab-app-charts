@@ -1,3 +1,33 @@
 homarr:
   env:
     TZ: "Asia/Kolkata"
+
+  # PVC for database/config persistence via nfs-csi
+  persistence:
+    homarrDatabase:
+      enabled: true
+      storageClassName: nfs-csi
+      accessMode: ReadWriteOnce
+      size: 1Gi
+  
+  # Strategy: Recreate since we use RWO PVC
+  strategyType: Recreate
+
+  # Ingress via Traefik with cert-manager TLS
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: homarr.uttutu.xyz
+        paths:
+          - path: /
+    tls:
+      - secretName: homarr-tls
+        hosts:
+          - homarr.uttutu.xyz
+  
+  # RBAC for Kubernetes integration
+  rbac:
+    enabled: true
