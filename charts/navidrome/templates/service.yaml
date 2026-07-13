@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: navidrome
+  labels:
+    app.service: navidrome
+spec:
+  ports:
+    - name: http
+      port: {{ .Values.navidrome.service.port }}
+  selector:
+    app.service: navidrome

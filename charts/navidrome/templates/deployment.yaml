@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: navidrome
+  labels:
+    app.service: navidrome
+spec:
+  replicas: {{ .Values.navidrome.replicaCount }}
+  strategy:
+    type: {{ .Values.navidrome.strategyType }}
+  selector:
+    matchLabels:
+      app.service: navidrome
+  template:
+    metadata:
+      labels:
+        app.service: navidrome
+    spec:
+      initContainers:
+        - name: init-permissions
+          image: busybox
+          command:
+            - /bin/sh
+            - -c
+            - chown -R 2000:2000 /data
+          volumeMounts:
+            - name: navidrome-config
+              mountPath: /data
+      securityContext:
+        runAsUser: {{ .Values.navidrome.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.navidrome.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.navidrome.securityContext.fsGroup }}
+      containers:
+        - name: navidrome
+          image: "{{ .Values.navidrome.image.repository }}:{{ .Values.navidrome.image.tag }}"
+          imagePullPolicy: {{ .Values.navidrome.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.navidrome.service.port }}
+              protocol: TCP
+          env:
+            - name: ND_MUSICFOLDER
+              value: {{ .Values.navidrome.env.ND_MUSICFOLDER }}
+            - name: ND_DATAFOLDER
+              value: {{ .Values.navidrome.env.ND_DATAFOLDER }}
+          {{- with .Values.navidrome.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: navidrome-config
+              mountPath: /data
+            - name: navidrome-music
+              mountPath: /music
+              readOnly: true
+              {{- if .Values.navidrome.persistence.music.subPath }}
+              subPath: {{ .Values.navidrome.persistence.music.subPath }}
+              {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.navidrome.service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: {{ .Values.navidrome.service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: navidrome-config
+          persistentVolumeClaim:
+            claimName: navidrome-config
+        - name: navidrome-music
+          persistentVolumeClaim:
+            claimName: {{ .Values.navidrome.persistence.music.existingClaim | default "navidrome-music" }}

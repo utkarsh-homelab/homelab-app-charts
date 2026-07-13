@@ -1,0 +1,56 @@
+navidrome:
+  replicaCount: 1
+  strategyType: Recreate
+
+  image:
+    repository: deluan/navidrome
+    tag: latest
+    pullPolicy: Always
+
+  env:
+    ND_MUSICFOLDER: "/music"
+    ND_DATAFOLDER: "/data"
+
+  service:
+    port: 4533
+
+  persistence:
+    config:
+      enabled: true
+      size: 1Gi
+      storageClassName: nfs-csi
+      accessMode: ReadWriteOnce
+    music:
+      enabled: true
+      existingClaim: "media-share"
+      subPath: "music"
+      size: 10Gi
+      storageClassName: nfs-csi
+      accessMode: ReadWriteOnce
+
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: music.uttutu.xyz
+        paths:
+          - path: /
+    tls:
+      - secretName: music-tls
+        hosts:
+          - music.uttutu.xyz
+
+  securityContext:
+    runAsUser: 2000
+    runAsGroup: 2000
+    fsGroup: 2000
+
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+    limits:
+      memory: 512Mi
+      cpu: 500m

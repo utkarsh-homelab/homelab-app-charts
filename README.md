@@ -7,7 +7,9 @@ Helm charts for self-hosted applications on Homelab Kubernetes cluster.
 ```
 charts/
 ├── homarr/                 → homarr (8.22.0, app v1.70.0) (umbrella chart)
-└── calibre-web-automated/  → calibre-web-automated (1.0.0) (custom chart)
+├── calibre-web-automated/  → calibre-web-automated (1.0.0) (custom chart)
+├── navidrome/              → navidrome (1.0.0) (custom chart)
+└── slskd/                  → slskd (1.0.0) (custom chart)
 ```
 
 Some charts are umbrella chart with a single upstream dependency. 
@@ -26,6 +28,10 @@ helm dependency build charts/<name>
 - Homarr : [Chart](https://artifacthub.io/packages/helm/homarr-labs/homarr), [Docs](https://homarr.dev/docs/getting-started/installation/helm/), [Source Code](https://github.com/homarr-labs/charts)
 
 - Calibre-Web-Automated : [Source Code](https://github.com/crocodilestick/Calibre-Web-Automated#)
+
+- Navidrome : [Docs](https://www.navidrome.org/docs/), [Source Code](https://github.com/navidrome/navidrome)
+
+- slskd : [Docs](https://github.com/slskd/slskd/blob/master/docs/docker.md), [Source Code](https://github.com/slskd/slskd)
 
 ## Companion Repo
 

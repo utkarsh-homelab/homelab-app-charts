@@ -1,0 +1,55 @@
+slskd:
+  replicaCount: 1
+  strategyType: Recreate
+
+  image:
+    repository: slskd/slskd
+    tag: latest
+    pullPolicy: Always
+
+  env:
+    PUID: "2000"
+    PGID: "2000"
+    SLSKD_REMOTE_CONFIGURATION: "true"
+    SLSKD_SHARED_DIR: "/shared"
+
+  service:
+    port: 5030
+    slskPort: 50300
+    loadBalancerIP: "192.168.0.201"
+
+  persistence:
+    config:
+      enabled: true
+      size: 1Gi
+      storageClassName: nfs-csi
+      accessMode: ReadWriteOnce
+    shared:
+      enabled: true
+      existingClaim: "media-share"
+      subPath: "music"
+      size: 10Gi
+      storageClassName: nfs-csi
+      accessMode: ReadWriteOnce
+
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: soulseek.uttutu.xyz
+        paths:
+          - path: /
+    tls:
+      - secretName: soulseek-tls
+        hosts:
+          - soulseek.uttutu.xyz
+
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 200m
+    limits:
+      memory: 1Gi
+      cpu: 500m

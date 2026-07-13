@@ -1,0 +1,39 @@
+{{- if .Values.slskd.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: slskd
+  labels:
+    app.service: slskd
+  {{- with .Values.slskd.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  ingressClassName: {{ .Values.slskd.ingress.ingressClassName }}
+  {{- if .Values.slskd.ingress.tls }}
+  tls:
+    {{- range .Values.slskd.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.slskd.ingress.hosts }}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: Prefix
+            backend:
+              service:
+                name: slskd
+                port:
+                  number: {{ $.Values.slskd.service.port }}
+          {{- end }}
+    {{- end }}
+{{- end }}

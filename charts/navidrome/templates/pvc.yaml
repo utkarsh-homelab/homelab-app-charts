@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: navidrome-config
+spec:
+  accessModes:
+    - {{ .Values.navidrome.persistence.config.accessMode }}
+  storageClassName: {{ .Values.navidrome.persistence.config.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.navidrome.persistence.config.size }}

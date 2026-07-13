@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slskd
+  labels:
+    app.service: slskd
+spec:
+  replicas: {{ .Values.slskd.replicaCount }}
+  strategy:
+    type: {{ .Values.slskd.strategyType }}
+  selector:
+    matchLabels:
+      app.service: slskd
+  template:
+    metadata:
+      labels:
+        app.service: slskd
+    spec:
+      containers:
+        - name: slskd
+          image: "{{ .Values.slskd.image.repository }}:{{ .Values.slskd.image.tag }}"
+          imagePullPolicy: {{ .Values.slskd.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.slskd.service.port }}
+              protocol: TCP
+              name: http
+            - containerPort: {{ .Values.slskd.service.slskPort }}
+              protocol: TCP
+              name: slsk
+          env:
+            - name: PUID
+              value: {{ .Values.slskd.env.PUID | quote }}
+            - name: PGID
+              value: {{ .Values.slskd.env.PGID | quote }}
+            - name: SLSKD_REMOTE_CONFIGURATION
+              value: {{ .Values.slskd.env.SLSKD_REMOTE_CONFIGURATION | quote }}
+            - name: SLSKD_SHARED_DIR
+              value: {{ .Values.slskd.env.SLSKD_SHARED_DIR }}
+          {{- with .Values.slskd.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: slskd-config
+              mountPath: /app
+            - name: slskd-shared
+              mountPath: /shared
+              {{- if .Values.slskd.persistence.shared.subPath }}
+              subPath: {{ .Values.slskd.persistence.shared.subPath }}
+              {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.slskd.service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.slskd.service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: slskd-config
+          persistentVolumeClaim:
+            claimName: slskd-config
+        - name: slskd-shared
+          persistentVolumeClaim:
+            claimName: {{ .Values.slskd.persistence.shared.existingClaim | default "slskd-shared" }}
