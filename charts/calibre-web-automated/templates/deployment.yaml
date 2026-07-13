@@ -16,6 +16,21 @@ spec:
       labels:
         app.service: calibre-web-automated
     spec:
+      # mount all three volumes, chowns them to UID/GID 2000
+      initContainers:
+        - name: init-permissions
+          image: busybox
+          command:
+            - /bin/sh
+            - -c
+            - chown -R 2000:2000 /config /calibre-library /cwa-book-ingest
+          volumeMounts:
+            - name: calibre-web-automated-config
+              mountPath: /config
+            - name: calibre-library
+              mountPath: /calibre-library
+            - name: cwa-ingest
+              mountPath: /cwa-book-ingest
       containers:
         - name: calibre-web-automated
           image: "{{ .Values.calibre_web_automated.image.repository }}:{{ .Values.calibre_web_automated.image.tag }}"
