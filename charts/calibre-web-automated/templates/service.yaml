@@ -7,7 +7,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: {{ .Values.calibre-web-automated.service.port }}
-      targetPort: {{ .Values.calibre-web-automated.env.CWA_PORT_OVERRIDE }}
+      port: {{ .Values.calibre_web_automated.service.port }}
+      targetPort: {{ .Values.calibre_web_automated.env.CWA_PORT_OVERRIDE }}
   selector:
     app.service: calibre-web-automated

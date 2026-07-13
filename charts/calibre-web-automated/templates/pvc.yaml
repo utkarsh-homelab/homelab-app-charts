@@ -4,36 +4,36 @@ metadata:
   name: cwa-config
 spec:
   accessModes:
-    - {{ .Values.calibre-web-automated.persistence.config.accessMode }}
-  storageClassName: {{ .Values.calibre-web-automated.persistence.config.storageClassName }}
+    - {{ .Values.calibre_web_automated.persistence.config.accessMode }}
+  storageClassName: {{ .Values.calibre_web_automated.persistence.config.storageClassName }}
   resources:
     requests:
-      storage: {{ .Values.calibre-web-automated.persistence.config.size }}
+      storage: {{ .Values.calibre_web_automated.persistence.config.size }}
 ---
-{{- if and .Values.calibre-web-automated.persistence.library.enabled (not .Values.calibre-web-automated.persistence.library.existingClaim) }}
+{{- if and .Values.calibre_web_automated.persistence.library.enabled (not .Values.calibre_web_automated.persistence.library.existingClaim) }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: calibre-library-pvc
 spec:
   accessModes:
-    - {{ .Values.calibre-web-automated.persistence.library.accessMode }}
-  storageClassName: {{ .Values.calibre-web-automated.persistence.library.storageClassName }}
+    - {{ .Values.calibre_web_automated.persistence.library.accessMode }}
+  storageClassName: {{ .Values.calibre_web_automated.persistence.library.storageClassName }}
   resources:
     requests:
-      storage: {{ .Values.calibre-web-automated.persistence.library.size }}
+      storage: {{ .Values.calibre_web_automated.persistence.library.size }}
 {{- end }}
 ---
-{{- if and .Values.calibre-web-automated.persistence.ingest.enabled (not .Values.calibre-web-automated.persistence.ingest.existingClaim) }}
+{{- if and .Values.calibre_web_automated.persistence.ingest.enabled (not .Values.calibre_web_automated.persistence.ingest.existingClaim) }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: cwa-ingest
 spec:
   accessModes:
-    - {{ .Values.calibre-web-automated.persistence.ingest.accessMode }}
-  storageClassName: {{ .Values.calibre-web-automated.persistence.ingest.storageClassName }}
+    - {{ .Values.calibre_web_automated.persistence.ingest.accessMode }}
+  storageClassName: {{ .Values.calibre_web_automated.persistence.ingest.storageClassName }}
   resources:
     requests:
-      storage: {{ .Values.calibre-web-automated.persistence.ingest.size }}
+      storage: {{ .Values.calibre_web_automated.persistence.ingest.size }}
 {{- end }}

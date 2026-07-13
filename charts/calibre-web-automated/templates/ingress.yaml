@@ -1,19 +1,19 @@
-{{- if .Values.calibre-web-automated.ingress.enabled }}
+{{- if .Values.calibre_web_automated.ingress.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: calibre-web-automated
   labels:
     app.service: calibre-web-automated
-  {{- with .Values.calibre-web-automated.ingress.annotations }}
+  {{- with .Values.calibre_web_automated.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: {{ .Values.calibre-web-automated.ingress.ingressClassName }}
-  {{- if .Values.calibre-web-automated.ingress.tls }}
+  ingressClassName: {{ .Values.calibre_web_automated.ingress.ingressClassName }}
+  {{- if .Values.calibre_web_automated.ingress.tls }}
   tls:
-    {{- range .Values.calibre-web-automated.ingress.tls }}
+    {{- range .Values.calibre_web_automated.ingress.tls }}
     - hosts:
         {{- range .hosts }}
         - {{ . | quote }}
@@ -22,7 +22,7 @@ spec:
     {{- end }}
   {{- end }}
   rules:
-    {{- range .Values.calibre-web-automated.ingress.hosts }}
+    {{- range .Values.calibre_web_automated.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -33,7 +33,7 @@ spec:
               service:
                 name: calibre-web-automated
                 port:
-                  number: {{ $.Values.calibre-web-automated.service.port }}
+                  number: {{ $.Values.calibre_web_automated.service.port }}
           {{- end }}
     {{- end }}
 {{- end }}

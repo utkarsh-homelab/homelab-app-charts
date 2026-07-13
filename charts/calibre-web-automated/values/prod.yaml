@@ -1,4 +1,4 @@
-calibre-web-automated:
+calibre_web_automated:
   replicaCount: 1
   strategyType: Recreate
 
