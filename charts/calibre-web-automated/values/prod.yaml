@@ -1,0 +1,62 @@
+calibre-web-automated:
+  replicaCount: 1
+  strategyType: Recreate
+
+  image:
+    repository: crocodilestick/calibre-web-automated
+    tag: latest
+    pullPolicy: Always
+
+  env:
+    TZ: "Asia/Kolkata"
+    PUID: "2000"
+    PGID: "2000"
+    NETWORK_SHARE_MODE: "true"
+    TRUSTED_PROXY_COUNT: "1"
+    CWA_PORT_OVERRIDE: "8083"
+
+  service:
+    port: 8083
+
+  persistence:
+    config:
+      enabled: true
+      size: 5Gi
+      storageClassName: nfs-csi
+      accessMode: ReadWriteOnce
+    library:
+      enabled: true
+      existingClaim: "media-share"
+      subPath: "books"
+      size: 50Gi
+      storageClassName: nfs-csi
+      accessMode: ReadWriteOnce
+    ingest:
+      enabled: true
+      existingClaim: "media-share"
+      subPath: "cwa-ingest"
+      size: 10Gi
+      storageClassName: nfs-csi
+      accessMode: ReadWriteOnce
+
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - host: books.uttutu.xyz
+        paths:
+          - path: /
+    tls:
+      - secretName: books-tls
+        hosts:
+          - books.uttutu.xyz
+
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 100m
+    limits:
+      memory: 1Gi
+      cpu: 500m

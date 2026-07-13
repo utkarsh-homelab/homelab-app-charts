@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calibre-web-automated
+  labels:
+    app.service: calibre-web-automated
+spec:
+  replicas: {{ .Values.calibre-web-automated.replicaCount }}
+  strategy:
+    type: {{ .Values.calibre-web-automated.strategyType }}
+  selector:
+    matchLabels:
+      app.service: calibre-web-automated
+  template:
+    metadata:
+      labels:
+        app.service: calibre-web-automated
+    spec:
+      containers:
+        - name: calibre-web-automated
+          image: "{{ .Values.calibre-web-automated.image.repository }}:{{ .Values.calibre-web-automated.image.tag }}"
+          imagePullPolicy: {{ .Values.calibre-web-automated.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.calibre-web-automated.env.CWA_PORT_OVERRIDE }}
+              protocol: TCP
+          env:
+            - name: TZ
+              value: {{ .Values.calibre-web-automated.env.TZ }}
+            - name: PUID
+              value: {{ .Values.calibre-web-automated.env.PUID | quote }}
+            - name: PGID
+              value: {{ .Values.calibre-web-automated.env.PGID | quote }}
+            - name: NETWORK_SHARE_MODE
+              value: {{ .Values.calibre-web-automated.env.NETWORK_SHARE_MODE | quote }}
+            - name: TRUSTED_PROXY_COUNT
+              value: {{ .Values.calibre-web-automated.env.TRUSTED_PROXY_COUNT | quote }}
+            - name: CWA_PORT_OVERRIDE
+              value: {{ .Values.calibre-web-automated.env.CWA_PORT_OVERRIDE | quote }}
+          {{- with .Values.calibre-web-automated.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: calibre-web-automated-config
+              mountPath: /config
+            - name: calibre-library
+              mountPath: /calibre-library
+              {{- if .Values.calibre-web-automated.persistence.library.subPath }}
+              subPath: {{ .Values.calibre-web-automated.persistence.library.subPath }}
+              {{- end }}
+            - name: cwa-ingest
+              mountPath: /cwa-book-ingest
+              {{- if .Values.calibre-web-automated.persistence.ingest.subPath }}
+              subPath: {{ .Values.calibre-web-automated.persistence.ingest.subPath }}
+              {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.calibre-web-automated.env.CWA_PORT_OVERRIDE }}
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.calibre-web-automated.env.CWA_PORT_OVERRIDE }}
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+      volumes:
+        - name: calibre-web-automated-config
+          persistentVolumeClaim:
+            claimName: cwa-config
+        - name: calibre-library
+          persistentVolumeClaim:
+            claimName: {{ .Values.calibre-web-automated.persistence.library.existingClaim | default "calibre-library-pvc" }}
+        - name: cwa-ingest
+          persistentVolumeClaim:
+            claimName: {{ .Values.calibre-web-automated.persistence.ingest.existingClaim | default "cwa-ingest" }}

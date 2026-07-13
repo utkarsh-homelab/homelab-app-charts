@@ -6,7 +6,8 @@ Helm charts for self-hosted applications on Homelab Kubernetes cluster.
 
 ```
 charts/
-└── homarr/   → homarr (8.22.0, app v1.70.0) (umbrella chart)
+├── homarr/                 → homarr (8.22.0, app v1.70.0) (umbrella chart)
+└── calibre-web-automated/  → calibre-web-automated (1.0.0) (custom chart)
 ```
 
 Some charts are umbrella chart with a single upstream dependency. 
@@ -20,9 +21,11 @@ helm repo add <component-name> <helm-chart-url>
 helm dependency build charts/<name>
 ```
 
-## Upstream Charts
+## References
 
 - Homarr : [Chart](https://artifacthub.io/packages/helm/homarr-labs/homarr), [Docs](https://homarr.dev/docs/getting-started/installation/helm/), [Source Code](https://github.com/homarr-labs/charts)
+
+- Calibre-Web-Automated : [Source Code](https://github.com/crocodilestick/Calibre-Web-Automated#)
 
 ## Companion Repo
 

@@ -1,6 +1,6 @@
 apiVersion: v2
 name: homarr
-description: Vendored Homarr Helm chart for uttutu homelab
+description: Vendored Homarr Helm chart
 type: application
 version: 1.0.0
 appVersion: v1.70.0
