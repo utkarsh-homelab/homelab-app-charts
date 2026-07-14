@@ -16,6 +16,7 @@ spec:
       labels:
         app.service: slskd
     spec:
+      enableServiceLinks: false
       containers:
         - name: slskd
           image: "{{ .Values.slskd.image.repository }}:{{ .Values.slskd.image.tag }}"
