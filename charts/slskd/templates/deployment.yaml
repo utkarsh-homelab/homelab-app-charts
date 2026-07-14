@@ -36,6 +36,8 @@ spec:
               value: {{ .Values.slskd.env.SLSKD_REMOTE_CONFIGURATION | quote }}
             - name: SLSKD_SHARED_DIR
               value: {{ .Values.slskd.env.SLSKD_SHARED_DIR }}
+            - name: SLSKD__SOULSEEK__PORT
+              value: {{ .Values.slskd.env.SLSKD__SOULSEEK__PORT | quote }}
           {{- with .Values.slskd.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

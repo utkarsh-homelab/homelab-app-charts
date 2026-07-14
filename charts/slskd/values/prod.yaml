@@ -12,6 +12,7 @@ slskd:
     PGID: "2000"
     SLSKD_REMOTE_CONFIGURATION: "true"
     SLSKD_SHARED_DIR: "/shared"
+    SLSKD__SOULSEEK__PORT: "50300"
 
   service:
     port: 5030
