@@ -16,16 +16,6 @@ spec:
       labels:
         app.service: navidrome
     spec:
-      initContainers:
-        - name: init-permissions
-          image: busybox
-          command:
-            - /bin/sh
-            - -c
-            - chown -R 2000:2000 /data
-          volumeMounts:
-            - name: navidrome-config
-              mountPath: /data
       securityContext:
         runAsUser: {{ .Values.navidrome.securityContext.runAsUser }}
         runAsGroup: {{ .Values.navidrome.securityContext.runAsGroup }}
