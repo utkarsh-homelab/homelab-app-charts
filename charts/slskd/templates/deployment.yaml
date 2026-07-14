@@ -39,6 +39,10 @@ spec:
               value: {{ .Values.slskd.env.SLSKD_SHARED_DIR }}
             - name: SLSKD__SOULSEEK__PORT
               value: {{ .Values.slskd.env.SLSKD__SOULSEEK__PORT | quote }}
+            - name: SLSKD__DIRECTORIES__DOWNLOADS
+              value: {{ .Values.slskd.env.SLSKD__DIRECTORIES__DOWNLOADS | quote }}
+            - name: SLSKD__DIRECTORIES__INCOMPLETE
+              value: {{ .Values.slskd.env.SLSKD__DIRECTORIES__INCOMPLETE | quote }}
           {{- with .Values.slskd.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

@@ -13,6 +13,8 @@ slskd:
     SLSKD_REMOTE_CONFIGURATION: "true"
     SLSKD_SHARED_DIR: "/shared"
     SLSKD__SOULSEEK__PORT: "50300"
+    SLSKD__DIRECTORIES__DOWNLOADS: "/shared"
+    SLSKD__DIRECTORIES__INCOMPLETE: "/shared"
 
   service:
     port: 5030
