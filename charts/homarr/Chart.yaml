@@ -7,4 +7,4 @@ appVersion: v1.70.0
 dependencies:
   - name: homarr
     version: 8.22.0
-    repository: https://homarr-labs.github.io/charts/
+    repository: oci://ghcr.io/homarr-labs/charts
